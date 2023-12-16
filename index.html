@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фотография</title>
+    <style>
+        .button {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Фотография из сети:</h1>
+    <div>
+        <div class="photo-container">
+        <div>
+            <div>
+                <p class="photo">Фотограф:</p>
+                <p class="photo-name"></p>
+            </div>
+            <div>
+                <button class="button">
+                    <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.16612 10.0881C4.9306 9.95091 4.72872 9.74511 4.4259 9.77941C4.32497 9.77941 4.32497 9.7108 4.32497 9.6422C4.32497 8.47598 4.32497 7.30975 4.32497 6.17783C4.32497 6.10923 4.35861 6.00632 4.4259 5.97202C5.3007 5.52611 5.67081 4.6343 6.20915 3.87968C6.74749 3.12506 6.98301 2.16464 6.81478 1.23852C6.78114 1.06702 6.88207 0.861214 7.0503 0.826913C7.08395 0.826913 7.08395 0.826913 7.1176 0.826913C7.35312 0.724011 7.62229 0.826916 7.75687 1.03272C8.02604 1.51293 8.19427 2.02744 8.26157 2.54195C8.26157 2.98786 8.22792 3.43377 8.09333 3.84538C8.05969 4.15409 7.9924 4.49709 7.9251 4.8058C7.9924 4.8744 8.09334 4.8401 8.16063 4.8401H11.0542C11.458 4.8401 11.6598 4.943 11.7271 5.21741C11.7944 5.56042 11.5925 5.90342 11.2897 6.04063C11.2224 6.07493 11.0878 6.04063 11.0878 6.17783C11.0878 6.31503 11.2224 6.28073 11.2897 6.31503C11.6262 6.55514 11.5925 7.06965 11.1888 7.34405C11.0878 7.41266 10.9196 7.37835 10.886 7.51556C10.8523 7.65276 11.0542 7.61846 11.1551 7.72136C11.3907 7.99577 11.3234 8.40738 11.0542 8.64748C10.9869 8.68178 10.9533 8.71609 10.886 8.75039C10.8187 8.78469 10.785 8.78469 10.7177 8.81899C10.6841 8.85329 10.6168 8.88759 10.7177 8.95619C10.9869 9.09339 11.1215 9.4364 10.9533 9.74511C10.886 9.84801 10.8187 9.95091 10.7177 9.98521L10.5831 10.0881C10.4149 10.191 10.2467 10.2253 10.0785 10.191H5.56987C5.43529 10.2253 5.3007 10.191 5.16612 10.0881Z" fill="white"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.893631 8.06429C0.893631 7.34397 0.893631 6.58936 0.893631 5.86904C0.893631 5.73184 0.89363 5.66324 1.09551 5.66324C1.97031 5.66324 2.84511 5.66324 3.71991 5.66324C3.88814 5.66324 3.92178 5.73184 3.92178 5.86904C3.92178 7.34397 3.92178 8.8532 3.92178 10.3281C3.92178 10.5339 3.88814 10.5682 3.68626 10.5682C2.84511 10.5682 1.97031 10.5682 1.12915 10.5682C0.927277 10.5682 0.893631 10.4996 0.893631 10.2938C0.893631 9.53922 0.893631 8.81891 0.893631 8.06429Z" fill="white"/>
+                        </svg>
+                        
+                </button>
+                <span class="like"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            renderPhoto();
+        });
+
+
+        async function getRandomPhoto() {
+            const apiKey = 'vogUn-n6VgTcf4auisZvpHHN7YUiSxZRZ7NRcQ08RVI';
+            try {
+                const response = await fetch(`https://api.unsplash.com/photos/random?client_id=${apiKey}`);
+                const photo = await response.json();
+                return photo;
+            } catch (error) {
+                console.error('Ошибка при загрузке фотографий:', error);
+                return {};
+            }
+        }
+
+
+        async function renderPhoto() {
+            const photo = await getRandomPhoto();
+            if (photo) {
+                const imageBox = document.querySelector('.photo-container');
+                const img = document.createElement('img');
+                img.classList.add('image');
+
+                img.src = photo.urls.small;
+                img.alt = photo.alt_description;
+                imageBox.appendChild(img);
+
+                const imagePhotographerNameDiv = document.querySelector('.photo-name');
+                imagePhotographerNameDiv.textContent = `${photo.user.name}`;
+
+                const imageLikesCounterSpan = document.querySelector('.like');
+                imageLikesCounterSpan.textContent = `${photo.likes}`;
+
+            }
+        }
+
+        const counterButton = document.querySelector('.button');
+        counterButton.addEventListener('click', function () {
+            increaseCounter();
+        });
+
+        function increaseCounter() {
+            const likesCounter = document.querySelector('.like');
+            const currentCounter = parseInt(likesCounter.textContent, 10);
+            likesCounter.textContent = currentCounter + 1;
+        }
+    </script>
+</body>
+</html>
